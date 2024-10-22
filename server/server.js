@@ -6,11 +6,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const dotenv = require("dotenv");
 const cors = require('cors');
-// const server = http.createServer(app);
-// const io = new Server(server);
 
 dotenv.config();
-// const port = process.env.SERVER_PORT_1;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -80,7 +78,7 @@ const configureSocketIO = (io) => {
     const io = new Server(server, {
       cors: {
         origin: allowedOrigins, // Allow React app origin
-        methods: ["GET", "POST"], // Allowable methods
+        methods: ["GET", "PUT", "POST", "DELETE"], // Allowable methods
         credentials: true         // Enable credentials if needed (like cookies)
       }
     }); // Attach a new Socket.IO instance to the server
