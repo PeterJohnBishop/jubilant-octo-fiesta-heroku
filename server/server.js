@@ -6,11 +6,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const dotenv = require("dotenv");
 const cors = require('cors');
-// const server = http.createServer(app);
-// const io = new Server(server);
 
 dotenv.config();
-// const port = process.env.SERVER_PORT_1;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
@@ -21,7 +19,8 @@ const allowedOrigins = [
   'http://192.168.0.165',            // XCode Simulator
   'http://localhost:3000',
   'http://192.168.0.165:3000',
-  process.env.HEROKU
+  'https://jubilant-octo-fiesta-heroku-6516beb7273f.herokuapp.com',
+  'https://jubilant-octo-fiesta-heroku-6516beb7273f.herokuapp.com:3000'
 ];
 
 const corsOptions = {
@@ -51,8 +50,6 @@ connection.once("open", () => {
 const UserRouter = require("./routes/UserRoutes");
 app.use("/users", UserRouter);
 
-const ports = [process.env.SERVER_PORT_SWIFT, process.env.SERVER_PORT_REACT, process.env.SERVER_PORT_FLUTTER];
-
 const configureSocketIO = (io) => {
   io.on('connection', (socket) => {
     console.log('A user connected on port:', io.httpServer.address().port);
@@ -75,12 +72,12 @@ const configureSocketIO = (io) => {
   });
 };
 
-  ports.forEach((port) => {
+ 
     const server = http.createServer(app); // Create a new HTTP server
     const io = new Server(server, {
       cors: {
         origin: allowedOrigins, // Allow React app origin
-        methods: ["GET", "POST"], // Allowable methods
+        methods: ["GET", "PUT", "POST", "DELETE"], // Allowable methods
         credentials: true         // Enable credentials if needed (like cookies)
       }
     }); // Attach a new Socket.IO instance to the server
@@ -90,5 +87,4 @@ const configureSocketIO = (io) => {
     server.listen(port, () => {
       console.log(`Server running with Socket.IO at ${process.env.HEROKU}:${port}/`);
     });
-  });
   
