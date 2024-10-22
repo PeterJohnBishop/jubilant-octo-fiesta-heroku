@@ -20,7 +20,8 @@ const allowedOrigins = [
   /^http:\/\/localhost(:\d+)?$/,     // Flutter App
   'http://192.168.0.165',            // XCode Simulator
   'http://localhost:3000',
-  'http://192.168.0.165:3000'
+  'http://192.168.0.165:3000',
+  process.env.HEROKU
 ];
 
 const corsOptions = {
@@ -87,7 +88,7 @@ const configureSocketIO = (io) => {
     configureSocketIO(io); // Attach the Socket.IO event handlers
   
     server.listen(port, () => {
-      console.log(`Server running with Socket.IO at http://localhost:${port}/`);
+      console.log(`Server running with Socket.IO at ${process.env.HEROKU}:${port}/`);
     });
   });
   
