@@ -9,7 +9,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    meByToken: User
+    meByToken: String
   }
 
   type Mutation {
