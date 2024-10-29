@@ -5,11 +5,11 @@ const User = require('../models/User');  // Import the User model
 
 const resolvers = {
   Query: {
-    me: async (parent, args, { user }) => {
-      if (!user) throw new AuthenticationError('You are not authenticated');
+    meByToken: async (parent, args, { token }) => {
+      if (!token) throw new AuthenticationError('You are not authenticated');
 
       // Fetch the user data from the database
-      const dbUser = await User.findById(user._id);
+      const dbUser = await User.findOne({ token });
       if (!dbUser) throw new AuthenticationError('User not found');
       return dbUser;
     },
