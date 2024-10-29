@@ -5,42 +5,73 @@ const User = require('../models/User');  // Import the User model
 
 const resolvers = {
   Query: {
-    meByToken: async (parent, args, { token }) => {
-      if (!token) throw new AuthenticationError('You are not authenticated');
-
-      // Fetch the user data from the database
-      const dbUser = await User.findOne({ token });
+    // Retrieves the current user based on token
+    me: async (parent, args, { user }) => {
+      if (!user) throw new AuthenticationError('You are not authenticated');
+      const dbUser = await User.findById(user.id);
       if (!dbUser) throw new AuthenticationError('User not found');
       return dbUser;
     },
+
+    // Finds a user by their MongoDB _id
+    getUserById: async (_, { _id }) => {
+      const user = await User.findById(_id);
+      if (!user) throw new Error('User not found');
+      return user;
+    },
+
+    // Retrieves all users
+    getAllUsers: async () => {
+      return await User.find();
+    },
   },
+
   Mutation: {
+    // Registers a new user
     register: async (_, { username, email, password }) => {
-      // Check if the user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) throw new Error('User with this email already exists');
 
-      // Hash the password and save the new user
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = new User({ username, email, password: hashedPassword });
       await user.save();
 
-      // Generate a JWT token
       const token = generateToken(user);
-      return { ...user.toObject(), token };
+      user.token = token;
+      return { ...user.toObject() };
     },
+
+    // Logs in an existing user
     login: async (_, { email, password }) => {
-      // Find the user by email
       const user = await User.findOne({ email });
       if (!user) throw new AuthenticationError('Invalid email or password');
 
-      // Verify the password
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) throw new AuthenticationError('Invalid email or password');
 
-      // Generate a JWT token
       const token = generateToken(user);
-      return { ...user.toObject(), token };
+      user.token = token
+      return { ...user.toObject() };
+    },
+
+    // Updates user details
+    updateUser: async (_, { _id, username, email, password }) => {
+      const updateFields = {};
+
+      if (username) updateFields.username = username;
+      if (email) updateFields.email = email;
+      if (password) updateFields.password = await bcrypt.hash(password, 10);  // Hash password if provided
+
+      const updatedUser = await User.findByIdAndUpdate(_id, updateFields, { new: true });
+      if (!updatedUser) throw new Error('User not found');
+      return updatedUser;
+    },
+
+    // Deletes a user by _id
+    deleteUser: async (_, { _id }) => {
+      const user = await User.findByIdAndDelete(_id);
+      if (!user) throw new Error('User not found');
+      return `User with _id ${id} has been deleted`;
     },
   },
 };
