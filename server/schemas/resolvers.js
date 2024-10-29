@@ -9,7 +9,7 @@ const resolvers = {
       if (!user) throw new AuthenticationError('You are not authenticated');
 
       // Fetch the user data from the database
-      const dbUser = await User.findById(user.id);
+      const dbUser = await User.findById(user._id);
       if (!dbUser) throw new AuthenticationError('User not found');
       return dbUser;
     },
@@ -47,7 +47,7 @@ const resolvers = {
 
 // Helper function to generate JWT token
 function generateToken(user) {
-  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ _id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 
 module.exports = resolvers;
