@@ -6,7 +6,7 @@ const User = require('../models/User');  // Import the User model
 const resolvers = {
   Query: {
     // Retrieves the current user based on token
-    me: async (parent, args, { user }) => {
+    getCurrentUser: async (parent, args, { user }) => {
       if (!user) throw new AuthenticationError('You are not authenticated');
       const dbUser = await User.findById(user.id);
       if (!dbUser) throw new AuthenticationError('User not found');

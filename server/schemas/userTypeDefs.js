@@ -10,7 +10,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    me: User
+    getCurrentUser: User
     getUserById(_id: ID!): User
     getAllUsers: [User!]!
   }
