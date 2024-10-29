@@ -15,6 +15,11 @@ const userSchema = new Schema(
       unique: true, // Ensure unique emails
       match: [/.+@.+\..+/, "Must match an email address!"], // Simple regex for email validation
     },
+    password: {
+      type: String,
+      required: [true, "Your password is required"],
+      minlength: 5, // Minimum password length
+    },
   },
   { timestamps: true } // Adds createdAt and updatedAt timestamps automatically
 );

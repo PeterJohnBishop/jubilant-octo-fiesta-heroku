@@ -49,8 +49,7 @@ const resolvers = {
       if (!isValid) throw new AuthenticationError('Invalid email or password');
 
       const token = generateToken(user);
-      user.token = token
-      return { ...user.toObject() };
+      return { ...user.toObject(), token };
     },
 
     // Updates user details

@@ -5,6 +5,7 @@ const typeDefs = gql`
     _id: ID!               # Use ID for MongoDB _id
     username: String!
     email: String!
+    password: String!
     token: String          # The token field, to return on login/register
   }
 
