@@ -8,8 +8,9 @@ import jwt from 'jsonwebtoken';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import resolvers from './schemas/resolvers.js';
-import typeDefs from './schemas/typeDefs.js';
+import userResolvers from './schemas/userResolvers.js';
+import userTypeDefs from './schemas/userTypeDefs.js';
+import userRoutes from './routes/UserRoutes.js'
 
 dotenv.config();
 
@@ -44,8 +45,10 @@ app.get('/', (req, res) => {
   res.send('Welcome to my Node server with GraphQL!');
 });
 
+app.use("/users", userRoutes);
+
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI);
 const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connection established successfully");
@@ -62,8 +65,8 @@ const getUserFromToken = (token) => {
 
 // Initialize Apollo Server
 const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
+  typeDefs: userTypeDefs, 
+  resolvers: userResolvers, 
 });
 
 // Start Apollo Server
@@ -118,5 +121,5 @@ configureSocketIO(io); // Attach Socket.IO event handlers
 
 // Start the server
 server.listen(port, () => {
-  console.log(`Server with Socket.IO and Apollo GraphQL running on port ${port}`);
+  console.log(`Server with REST API, Socket.IO and Apollo GraphQL running on port ${port}`);
 });
