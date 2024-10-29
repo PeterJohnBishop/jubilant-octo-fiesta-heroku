@@ -37,8 +37,7 @@ const resolvers = {
       await user.save();
 
       const token = generateToken(user);
-      user.token = token;
-      return { ...user.toObject() };
+      return { ...user.toObject(), token };
     },
 
     // Logs in an existing user
