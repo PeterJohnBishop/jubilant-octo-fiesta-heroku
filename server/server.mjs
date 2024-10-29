@@ -16,7 +16,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Middleware
 app.use(bodyParser.json());
 
 // CORS configuration
@@ -38,7 +37,12 @@ const corsOptions = {
   },
   credentials: true,
 };
+
 app.use(cors(corsOptions));
+
+app.get('/', (req, res) => {
+  res.send('Welcome to my Node server with GraphQL!');
+});
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
